@@ -19,4 +19,9 @@ def send_help(message):
     bot.send_message(message.chat.id, "Я пока ничего не умею(")
 
 
+@bot.message_handler(content_types=["text"])
+def content_text(message):
+    bot.send_message(message.chat.id, message.text)
+
+
 bot.polling()
