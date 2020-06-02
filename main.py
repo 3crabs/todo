@@ -11,7 +11,8 @@ bot = telebot.TeleBot(config["token"])
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.send_message(message.chat.id, "Привет я todo bot от 3CRABS soft!\nЧтобы узнать подробности введи /help")
+    bot.send_message(message.chat.id, "Привет я todo bot от 3CRABS soft!\n"
+                                      "Чтобы узнать подробности введи /help")
 
 
 @bot.message_handler(commands=['help'])
