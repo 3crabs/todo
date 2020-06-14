@@ -13,6 +13,8 @@ config = json.loads(data)
 
 bot = telebot.TeleBot(config["token"])
 
+data_base = []
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -33,10 +35,14 @@ def content_text(message):
 def content_text_answer(text: str) -> str:
     if text == 'бот покажи список':
         return 'Ваш список пока пуст'
+
+    data_base.append('')
+
     answer = ''
     for word in text.split()[2:]:
         answer += word + ' '
     answer += 'добавлено'
+
     return answer
 
 
