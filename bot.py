@@ -42,11 +42,16 @@ def content_text_answer(text: str) -> str:
                 answer += f'{i+1}) {data_base[i]}\n'
             return answer
         return 'Ваш список пока пуст'
-
-    for word in text.split()[2:]:
-        answer += word + ' '
-    data_base.append(answer)
-    answer += 'добавлено'
+    elif 'добавь' in text:
+        for word in text.split()[2:]:
+            answer += word + ' '
+        data_base.append(answer)
+        answer += 'добавлено'
+    else:
+        number = int(text.split()[2]) - 1
+        answer += data_base[number]
+        data_base.remove(data_base[0])
+        answer += 'удалено'
 
     return answer
 
