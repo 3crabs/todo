@@ -33,12 +33,18 @@ def content_text(message):
 
 
 def content_text_answer(text: str) -> str:
+    answer = ''
+
     if text == 'бот покажи список':
+        if data_base:
+            answer += 'Ваш список\n'
+            for item in data_base:
+                answer += item + '\n'
+            return answer
         return 'Ваш список пока пуст'
 
     data_base.append('')
 
-    answer = ''
     for word in text.split()[2:]:
         answer += word + ' '
     answer += 'добавлено'

@@ -21,3 +21,8 @@ class FunctionalTest(unittest.TestCase):
         answer = content_text_answer('бот покажи список')
         self.assertEqual('Ваш список пока пуст', answer)
         self.assertEqual(0, len(bot.data_base))
+
+    def test_get_list_with_one_item(self):
+        bot.data_base.append('дело №1')
+        answer = content_text_answer('бот покажи список')
+        self.assertIn('дело №1', answer)
