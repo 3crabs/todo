@@ -38,8 +38,8 @@ def content_text_answer(text: str) -> str:
     if text == 'бот покажи список':
         if data_base:
             answer += 'Ваш список\n'
-            for item in data_base:
-                answer += item + '\n'
+            for i in range(len(data_base)):
+                answer += f'{i+1}) {data_base[i]}\n'
             return answer
         return 'Ваш список пока пуст'
 

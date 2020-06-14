@@ -25,9 +25,9 @@ class FunctionalTest(unittest.TestCase):
     def test_get_list_with_one_item(self):
         bot.data_base.append('дело №1')
         answer = content_text_answer('бот покажи список')
-        self.assertIn('дело №1', answer)
+        self.assertIn('1) дело №1', answer)
 
     def test_add_item_and_get_list(self):
         content_text_answer('бот добавь дело №1')
         answer = content_text_answer('бот покажи список')
-        self.assertIn('дело №1', answer)
+        self.assertIn('1) дело №1', answer)
