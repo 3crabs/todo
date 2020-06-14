@@ -2,8 +2,13 @@ import json
 
 import telebot
 
-with open('telegram_token.json', 'r') as file:
-    data = file.read()
+configFileName = 'telegram_token.json'
+try:
+    with open(configFileName, 'r') as file:
+        data = file.read()
+except FileNotFoundError as e:
+    print(f"File {configFileName} not found.")
+    exit()
 config = json.loads(data)
 
 bot = telebot.TeleBot(config["token"])
@@ -25,4 +30,13 @@ def content_text(message):
     bot.send_message(message.chat.id, message.text)
 
 
-bot.polling()
+def content_text_answer(text: str) -> str:
+    answer = ''
+    for word in text.split()[2:]:
+        answer += word + ' '
+    answer += 'добавлено'
+    return answer
+
+
+if __name__ == '__main__':
+    bot.polling()
