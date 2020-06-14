@@ -31,6 +31,8 @@ def content_text(message):
 
 
 def content_text_answer(text: str) -> str:
+    if text == 'бот покажи список':
+        return 'Ваш список пока пуст'
     answer = ''
     for word in text.split()[2:]:
         answer += word + ' '
