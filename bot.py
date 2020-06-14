@@ -13,6 +13,8 @@ config = json.loads(data)
 
 bot = telebot.TeleBot(config["token"])
 
+database = ['']
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
