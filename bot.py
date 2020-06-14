@@ -43,10 +43,9 @@ def content_text_answer(text: str) -> str:
             return answer
         return 'Ваш список пока пуст'
 
-    data_base.append('')
-
     for word in text.split()[2:]:
         answer += word + ' '
+    data_base.append(answer)
     answer += 'добавлено'
 
     return answer
