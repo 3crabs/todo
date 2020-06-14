@@ -13,7 +13,7 @@ config = json.loads(data)
 
 bot = telebot.TeleBot(config["token"])
 
-data_base = []
+data_base = {}
 
 
 @bot.message_handler(commands=['start'])
@@ -35,25 +35,30 @@ def content_text(message):
     bot.send_message(message.chat.id, content_text_answer(message.text.lower()))
 
 
-def content_text_answer(text: str) -> str:
+def content_text_answer(text: str, chat_id: str) -> str:
     answer = ''
 
     if text == 'бот покажи список':
-        if data_base:
+        if chat_id not in data_base:
+            return 'Ваш список пока пуст'
+        if data_base[chat_id]:
             answer += 'Ваш список\n'
-            for i in range(len(data_base)):
-                answer += f'{i+1}) {data_base[i]}\n'
+            for i in range(len(data_base[chat_id])):
+                answer += f'{i + 1}) {data_base[chat_id][i]}\n'
             return answer
-        return 'Ваш список пока пуст'
     elif 'добавь' in text:
+        if chat_id not in data_base:
+            data_base[chat_id] = []
         for word in text.split()[2:]:
             answer += word + ' '
-        data_base.append(answer.strip())
+        data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
     else:
         number = int(text.split()[2]) - 1
-        answer += data_base[number]
-        data_base.pop(0)
+        answer += data_base[chat_id][number]
+        data_base[chat_id].pop(0)
+        if not data_base[chat_id]:
+            data_base.pop(chat_id)
         answer += ' удалено'
 
     return answer
