@@ -45,13 +45,13 @@ def content_text_answer(text: str) -> str:
     elif 'добавь' in text:
         for word in text.split()[2:]:
             answer += word + ' '
-        data_base.append(answer)
+        data_base.append(answer.strip())
         answer += 'добавлено'
     else:
         number = int(text.split()[2]) - 1
         answer += data_base[number]
         data_base.pop(0)
-        answer += 'удалено'
+        answer += ' удалено'
 
     return answer
 

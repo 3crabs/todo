@@ -16,9 +16,10 @@ class FunctionalTest(unittest.TestCase):
         answer = content_text_answer('бот добавь дело №1')
         self.assertEqual('дело №1 добавлено', answer)
         self.assertEqual(1, len(bot.data_base))
+        self.assertEqual('дело №1', bot.data_base[0])
 
     def test_delete_todo_item(self):
-        content_text_answer('бот добавь дело №1')
+        bot.data_base = ['дело №1']
         answer = content_text_answer('бот удали 1')
         self.assertEqual('дело №1 удалено', answer)
         self.assertEqual(0, len(bot.data_base))
@@ -27,11 +28,6 @@ class FunctionalTest(unittest.TestCase):
         answer = content_text_answer('бот покажи список')
         self.assertEqual('Ваш список пока пуст', answer)
         self.assertEqual(0, len(bot.data_base))
-
-    def test_get_list_with_one_item(self):
-        bot.data_base.append('дело №1')
-        answer = content_text_answer('бот покажи список')
-        self.assertIn('1) дело №1', answer)
 
     def test_add_item_and_get_list(self):
         content_text_answer('бот добавь дело №1')
