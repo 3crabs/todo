@@ -50,7 +50,7 @@ def content_text_answer(text: str) -> str:
     else:
         number = int(text.split()[2]) - 1
         answer += data_base[number]
-        data_base.remove(data_base[0])
+        data_base.pop(0)
         answer += 'удалено'
 
     return answer
