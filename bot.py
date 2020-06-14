@@ -24,15 +24,15 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['help'])
 def send_help(message):
-    bot.send_message(message.chat.id, "Напиши:"
-                                      "бот добавь {название пункта}"
-                                      "бот покажи список"
+    bot.send_message(message.chat.id, "Напиши:\n"
+                                      "бот добавь {название пункта}\n"
+                                      "бот покажи список\n"
                                       "бот удали {номер пункта}")
 
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
-    bot.send_message(message.chat.id, content_text_answer(message.text))
+    bot.send_message(message.chat.id, content_text_answer(message.text.lower()))
 
 
 def content_text_answer(text: str) -> str:
