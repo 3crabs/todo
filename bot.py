@@ -2,12 +2,12 @@ import json
 
 import telebot
 
-configFileName = 'telegram_token.json'
+config_file_name = 'telegram_token.json'
 try:
-    with open(configFileName, 'r') as file:
+    with open(config_file_name, 'r') as file:
         data = file.read()
 except FileNotFoundError as e:
-    print(f"File {configFileName} not found.")
+    print(f"File {config_file_name} not found.")
     exit()
 config = json.loads(data)
 
@@ -92,4 +92,5 @@ def content_text_answer(text: str, chat_id: str) -> str:
 
 
 if __name__ == '__main__':
+    save()
     bot.polling()
