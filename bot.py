@@ -32,7 +32,9 @@ def send_help(message):
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
-    bot.send_message(message.chat.id, content_text_answer(message.text.lower()))
+    answer = content_text_answer(message.text.lower(), message.chat.id)
+    if answer != '':
+        bot.send_message(message.chat.id, answer)
 
 
 def content_text_answer(text: str, chat_id: str) -> str:
@@ -53,13 +55,15 @@ def content_text_answer(text: str, chat_id: str) -> str:
             answer += word + ' '
         data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
-    else:
+    elif 'удали' in text:
         number = int(text.split()[2]) - 1
         answer += data_base[chat_id][number]
         data_base[chat_id].pop(0)
         if not data_base[chat_id]:
             data_base.pop(chat_id)
         answer += ' удалено'
+    else:
+        return ''
 
     return answer
 

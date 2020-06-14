@@ -37,3 +37,7 @@ class FunctionalTest(unittest.TestCase):
 
         answer = content_text_answer('бот покажи список', '2')
         self.assertIn('Ваш список пока пуст', answer)
+
+    def test_text(self):
+        answer = content_text_answer('бот', '1')
+        self.assertEqual('', answer)
