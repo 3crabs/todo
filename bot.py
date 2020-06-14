@@ -14,6 +14,18 @@ config = json.loads(data)
 bot = telebot.TeleBot(config["token"])
 
 data_base = {}
+try:
+    data_base_file_name = 'data_base.json'
+    with open(data_base_file_name, 'r') as file:
+        data = file.read()
+    data_base = json.loads(data)
+except FileNotFoundError as e:
+    pass
+
+
+def save():
+    with open("data_base.json", "w") as write_file:
+        json.dump(data_base, write_file)
 
 
 @bot.message_handler(commands=['start'])
@@ -27,12 +39,21 @@ def send_help(message):
     bot.send_message(message.chat.id, "Напиши:\n"
                                       "бот добавь {название пункта}\n"
                                       "бот покажи список\n"
-                                      "бот удали {номер пункта}")
+                                      "бот удали {номер пункта}\n\n"
+                                      "Или команды:\n"
+                                      "/start - привет бот\n"
+                                      "/help - помощь\n"
+                                      "/list - список\n")
+
+
+@bot.message_handler(commands=["list"])
+def send_list(message):
+    bot.send_message(message.chat.id, content_text_answer('бот покажи список', str(message.chat.id)))
 
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
-    answer = content_text_answer(message.text.lower(), message.chat.id)
+    answer = content_text_answer(message.text.lower(), str(message.chat.id))
     if answer != '':
         bot.send_message(message.chat.id, answer)
 
@@ -55,6 +76,7 @@ def content_text_answer(text: str, chat_id: str) -> str:
             answer += word + ' '
         data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
+        save()
     elif 'удали' in text:
         number = int(text.split()[2]) - 1
         answer += data_base[chat_id][number]
@@ -62,6 +84,7 @@ def content_text_answer(text: str, chat_id: str) -> str:
         if not data_base[chat_id]:
             data_base.pop(chat_id)
         answer += ' удалено'
+        save()
     else:
         return ''
 
