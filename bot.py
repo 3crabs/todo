@@ -79,7 +79,7 @@ def content_text_answer(text: str, chat_id: str) -> str:
     elif 'удали' in text:
         number = int(text.split()[2]) - 1
         answer += data_base[chat_id][number]
-        data_base[chat_id].pop(0)
+        data_base[chat_id].pop(number)
         if not data_base[chat_id]:
             data_base.pop(chat_id)
         answer += ' удалено'
