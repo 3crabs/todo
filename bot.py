@@ -76,8 +76,11 @@ def content_text_answer(text: str, chat_id: str) -> str:
         data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
         save()
-    elif 'удали' in text:
-        number = int(text.split()[2]) - 1
+    elif 'удали' in text or text.startswith('-'):
+        if 'удали' in text:
+            number = int(text.split()[2]) - 1
+        else:
+            number = int(text.split()[1]) - 1
         answer += data_base[chat_id][number]
         data_base[chat_id].pop(number)
         if not data_base[chat_id]:
