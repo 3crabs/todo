@@ -41,3 +41,10 @@ class FunctionalTest(unittest.TestCase):
     def test_text(self):
         answer = content_text_answer('бот', '1')
         self.assertEqual('', answer)
+
+    def test_short_add_item(self):
+        answer = content_text_answer('+ дело №1', '1')
+        self.assertEqual('дело №1 добавлено', answer)
+        self.assertEqual(1, len(bot.data_base))
+        self.assertEqual(1, len(bot.data_base['1']))
+        self.assertEqual('дело №1', bot.data_base['1'][0])
