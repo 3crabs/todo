@@ -1,5 +1,4 @@
 import json
-
 import telebot
 
 config_file_name = 'telegram_token.json'
