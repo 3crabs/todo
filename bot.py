@@ -60,7 +60,7 @@ def content_text(message):
 def content_text_answer(text: str, chat_id: str) -> str:
     answer = ''
 
-    if text == 'бот покажи список':
+    if text == 'бот покажи список' or text == '.':
         if chat_id not in data_base:
             return 'Ваш список пока пуст'
         if data_base[chat_id]:

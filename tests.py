@@ -34,7 +34,6 @@ class FunctionalTest(unittest.TestCase):
         content_text_answer('бот добавь дело №1', '1')
         answer = content_text_answer('бот покажи список', '1')
         self.assertIn('1) дело №1', answer)
-
         answer = content_text_answer('бот покажи список', '2')
         self.assertIn('Ваш список пока пуст', answer)
 
@@ -53,4 +52,9 @@ class FunctionalTest(unittest.TestCase):
         bot.data_base = {'1': ['дело №1']}
         answer = content_text_answer('- 1', '1')
         self.assertEqual('дело №1 удалено', answer)
+        self.assertEqual(0, len(bot.data_base))
+
+    def test_short_get_empty_list(self):
+        answer = content_text_answer('.', '1')
+        self.assertEqual('Ваш список пока пуст', answer)
         self.assertEqual(0, len(bot.data_base))
