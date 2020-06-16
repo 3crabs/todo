@@ -44,9 +44,9 @@ def send_help(message):
                                       "бот покажи список\n\n"
 
                                       "Или напиши сокращенно:\n"
-                                      "+ {название пункта} (добавление)\n"
-                                      "- {номер пункта} (удаление)\n"
-                                      ". (просмотр)\n\n"
+                                      "++ {название пункта} (добавление)\n"
+                                      "-- {номер пункта} (удаление)\n"
+                                      "?? (просмотр)\n\n"
 
                                       "Или команды:\n"
                                       "/start - привет бот\n"
@@ -81,11 +81,11 @@ def content_text_answer(text: str, chat_id: str) -> str:
             for i in range(len(data_base[chat_id])):
                 answer += f'{i + 1}) {data_base[chat_id][i]}\n'
             return answer
-    elif text.startswith('бот добавь') or text.startswith('+?'):
+    elif text.startswith('бот добавь') or text.startswith('++'):
         if text.startswith('бот добавь'):
             text = text.replace('бот добавь', '').strip()
         else:
-            text = text.replace('+?', '').strip()
+            text = text.replace('++', '').strip()
 
         if text == '':
             return ''
@@ -97,16 +97,19 @@ def content_text_answer(text: str, chat_id: str) -> str:
         data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
         save()
-    elif text.startswith('бот удали') or text.startswith('-?'):
+    elif text.startswith('бот удали') or text.startswith('--'):
         if text.startswith('бот удали'):
             text = text.replace('бот удали', '').strip()
         else:
-            text = text.replace('-?', '').strip()
+            text = text.replace('--', '').strip()
 
         if text == '':
             return ''
 
-        number = int(text.split()[0]) - 1
+        try:
+            number = int(text.split()[0]) - 1
+        except ValueError:
+            return f'{text.split()[0]} это не номер в списке'
         if chat_id in data_base and len(data_base[chat_id]) > number:
             answer += data_base[chat_id][number]
             data_base[chat_id].pop(number)

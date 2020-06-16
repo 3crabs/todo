@@ -42,15 +42,17 @@ class FunctionalTest(unittest.TestCase):
     def test_short_commands(self):
         answer = content_text_answer('??', '1')
         self.assertEqual('Ваш список пока пуст', answer)
-        answer = content_text_answer('+? дело №1', '1')
+        answer = content_text_answer('++ дело №1', '1')
         self.assertEqual('дело №1 добавлено', answer)
-        answer = content_text_answer('-? 1', '1')
+        answer = content_text_answer('-- 1', '1')
         self.assertEqual('дело №1 удалено', answer)
 
     def test_short_delete_todo_item_out_of_range(self):
         bot.data_base = {'1': ['дело №1']}
-        answer = content_text_answer('-? 2', '1')
+        answer = content_text_answer('-- 2', '1')
         self.assertEqual('Элемента №2 нет', answer)
+        answer = content_text_answer('-- дело', '1')
+        self.assertEqual('дело это не номер в списке', answer)
 
     def test_error(self):
         answer = content_text_answer('+', '1')
