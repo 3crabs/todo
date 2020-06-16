@@ -41,11 +41,13 @@ def send_help(message):
                                       "Напиши:\n"
                                       "бот добавь {название пункта}\n"
                                       "бот удали {номер пункта}\n"
+                                      "бот зачеркни {номер пункта}\n"
                                       "бот покажи список\n\n"
 
                                       "Или напиши сокращенно:\n"
                                       "++ {название пункта} (добавление)\n"
                                       "-- {номер пункта} (удаление)\n"
+                                      "** {номер пункта} (зачеркивание)\n"
                                       "?? (просмотр)\n\n"
 
                                       "Или команды:\n"
@@ -63,8 +65,9 @@ def send_list(message):
 def content_text(message):
     print(f'От {message.from_user.first_name} в {message.chat.title} пришло {message.text}')
     answer = content_text_answer(message.text.lower().strip(), str(message.chat.id))
+    print(answer)
     if answer != '':
-        bot.send_message(message.chat.id, answer)
+        bot.send_message(message.chat.id, answer, parse_mode="HTML")
 
 
 def content_text_answer(text: str, chat_id: str) -> str:
@@ -79,7 +82,10 @@ def content_text_answer(text: str, chat_id: str) -> str:
         if data_base[chat_id]:
             answer += 'Ваш список\n'
             for i in range(len(data_base[chat_id])):
-                answer += f'{i + 1}) {data_base[chat_id][i]}\n'
+                item_text = f'{i + 1}) {data_base[chat_id][i]["title"]}'
+                if data_base[chat_id][i]["done"]:
+                    item_text = f'<strike>{item_text}</strike>'
+                answer += f'{item_text}\n'
             return answer
     elif text.startswith('бот добавь') or text.startswith('++'):
         if text.startswith('бот добавь'):
@@ -94,7 +100,7 @@ def content_text_answer(text: str, chat_id: str) -> str:
             data_base[chat_id] = []
         for word in text.split():
             answer += word + ' '
-        data_base[chat_id].append(answer.strip())
+        data_base[chat_id].append({"title": answer.strip(), "done": False})
         answer += 'добавлено'
         save()
     elif text.startswith('бот удали') or text.startswith('--'):
@@ -111,11 +117,31 @@ def content_text_answer(text: str, chat_id: str) -> str:
         except ValueError:
             return f'{text.split()[0]} это не номер в списке'
         if chat_id in data_base and len(data_base[chat_id]) > number:
-            answer += data_base[chat_id][number]
+            answer += data_base[chat_id][number]["title"]
             data_base[chat_id].pop(number)
             if not data_base[chat_id]:
                 data_base.pop(chat_id)
             answer += ' удалено'
+            save()
+        else:
+            return f'Элемента №{number + 1} нет'
+    elif text.startswith('бот зачеркни') or text.startswith('**'):
+        if text.startswith('бот зачеркни'):
+            text = text.replace('бот зачеркни', '').strip()
+        else:
+            text = text.replace('**', '').strip()
+
+        if text == '':
+            return ''
+
+        try:
+            number = int(text.split()[0]) - 1
+        except ValueError:
+            return f'{text.split()[0]} это не номер в списке'
+        if chat_id in data_base and len(data_base[chat_id]) > number:
+            answer += data_base[chat_id][number]["title"]
+            data_base[chat_id][number]["done"] = True
+            answer += ' зачеркнуто'
             save()
         else:
             return f'Элемента №{number + 1} нет'
