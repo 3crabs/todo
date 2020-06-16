@@ -42,12 +42,12 @@ def send_help(message):
                                       "бот добавь {название пункта}\n"
                                       "бот удали {номер пункта}\n"
                                       "бот покажи список\n\n"
-                                      
+
                                       "Или напиши сокращенно:\n"
                                       "+ {название пункта} (добавление)\n"
                                       "- {номер пункта} (удаление)\n"
                                       ". (просмотр)\n\n"
-                                      
+
                                       "Или команды:\n"
                                       "/start - привет бот\n"
                                       "/help - помощь\n"
@@ -61,7 +61,7 @@ def send_list(message):
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
-    answer = content_text_answer(message.text.lower(), str(message.chat.id))
+    answer = content_text_answer(message.text.lower().strip(), str(message.chat.id))
     if answer != '':
         bot.send_message(message.chat.id, answer)
 
@@ -69,7 +69,7 @@ def content_text(message):
 def content_text_answer(text: str, chat_id: str) -> str:
     answer = ''
 
-    if text == '+' or text == '-':
+    if text == '+' or text == '-' or text == 'бот добавь' or text == 'бот удали':
         return ''
 
     if text == 'бот покажи список' or text == '.':

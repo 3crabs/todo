@@ -69,3 +69,7 @@ class FunctionalTest(unittest.TestCase):
         self.assertEqual('', answer)
         answer = content_text_answer('-', '1')
         self.assertEqual('', answer)
+        answer = content_text_answer('бот добавь', '1')
+        self.assertEqual('', answer)
+        answer = content_text_answer('бот удали', '1')
+        self.assertEqual('', answer)
