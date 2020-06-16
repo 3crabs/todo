@@ -61,6 +61,7 @@ def send_list(message):
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
+    print(f'Пришло {message.text}')
     answer = content_text_answer(message.text.lower().strip(), str(message.chat.id))
     if answer != '':
         bot.send_message(message.chat.id, answer)
