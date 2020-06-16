@@ -18,5 +18,5 @@ if __name__ == '__main__':
     with open('../data_base.json', 'r') as file:
         data = file.read()
     data = update_base(data)
-    with open('../data_base_1.json', 'w') as file:
+    with open('../data_base.json', 'w') as file:
         file.write(data)
