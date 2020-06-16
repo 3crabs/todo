@@ -1,3 +1,8 @@
-pkill python
+echo "git pull"
 git pull
+
+echo "pkill python"
+pkill python
+
+echo "python bot.py &"
 python bot.py &
