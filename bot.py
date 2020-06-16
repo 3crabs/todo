@@ -58,7 +58,7 @@ def send_help(message):
 
 @bot.message_handler(commands=["list"])
 def send_list(message):
-    bot.send_message(message.chat.id, content_text_answer('бот покажи список', str(message.chat.id)))
+    bot.send_message(message.chat.id, content_text_answer('бот покажи список', str(message.chat.id)), parse_mode='HTML')
 
 
 @bot.message_handler(content_types=["text"])
