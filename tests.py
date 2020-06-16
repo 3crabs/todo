@@ -24,6 +24,8 @@ class FunctionalTest(unittest.TestCase):
         answer = content_text_answer('бот удали 1', '1')
         self.assertEqual('дело №1 удалено', answer)
         self.assertEqual(0, len(bot.data_base))
+        answer = content_text_answer('бот удали 1', '1')
+        self.assertEqual('Элемента №1 нет', answer)
 
     def test_get_empty_list(self):
         answer = content_text_answer('бот покажи список', '1')

@@ -98,7 +98,7 @@ def content_text_answer(text: str, chat_id: str) -> str:
             number = int(text.split()[2]) - 1
         else:
             number = int(text.split()[1]) - 1
-        if data_base[chat_id] and len(data_base[chat_id]) > number:
+        if chat_id in data_base and len(data_base[chat_id]) > number:
             answer += data_base[chat_id][number]
             data_base[chat_id].pop(number)
             if not data_base[chat_id]:
