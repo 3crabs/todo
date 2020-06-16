@@ -69,6 +69,9 @@ def content_text(message):
 def content_text_answer(text: str, chat_id: str) -> str:
     answer = ''
 
+    if text == '+' or text == '-':
+        return ''
+
     if text == 'бот покажи список' or text == '.':
         if chat_id not in data_base:
             return 'Ваш список пока пуст'
@@ -77,8 +80,8 @@ def content_text_answer(text: str, chat_id: str) -> str:
             for i in range(len(data_base[chat_id])):
                 answer += f'{i + 1}) {data_base[chat_id][i]}\n'
             return answer
-    elif 'бот добавь' in text or text.startswith('+'):
-        if 'бот добавь' in text:
+    elif text.startswith('бот добавь') or text.startswith('+'):
+        if text.startswith('бот добавь'):
             start_split = 2
         else:
             start_split = 1
@@ -89,17 +92,20 @@ def content_text_answer(text: str, chat_id: str) -> str:
         data_base[chat_id].append(answer.strip())
         answer += 'добавлено'
         save()
-    elif 'бот удали' in text or text.startswith('-'):
-        if 'бот удали' in text:
+    elif text.startswith('бот удали') or text.startswith('-'):
+        if text.startswith('бот удали'):
             number = int(text.split()[2]) - 1
         else:
             number = int(text.split()[1]) - 1
-        answer += data_base[chat_id][number]
-        data_base[chat_id].pop(number)
-        if not data_base[chat_id]:
-            data_base.pop(chat_id)
-        answer += ' удалено'
-        save()
+        if len(data_base[chat_id]) > number:
+            answer += data_base[chat_id][number]
+            data_base[chat_id].pop(number)
+            if not data_base[chat_id]:
+                data_base.pop(chat_id)
+            answer += ' удалено'
+            save()
+        else:
+            return f'Элемента №{number + 1} нет'
     else:
         return ''
 

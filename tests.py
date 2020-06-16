@@ -54,7 +54,18 @@ class FunctionalTest(unittest.TestCase):
         self.assertEqual('дело №1 удалено', answer)
         self.assertEqual(0, len(bot.data_base))
 
+    def test_short_delete_todo_item_out_of_range(self):
+        bot.data_base = {'1': ['дело №1']}
+        answer = content_text_answer('- 2', '1')
+        self.assertEqual('Элемента №2 нет', answer)
+
     def test_short_get_empty_list(self):
         answer = content_text_answer('.', '1')
         self.assertEqual('Ваш список пока пуст', answer)
         self.assertEqual(0, len(bot.data_base))
+
+    def test_error(self):
+        answer = content_text_answer('+', '1')
+        self.assertEqual('', answer)
+        answer = content_text_answer('-', '1')
+        self.assertEqual('', answer)
