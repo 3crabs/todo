@@ -12,19 +12,31 @@ config = json.loads(data)
 
 bot = telebot.TeleBot(config["token"])
 
-data_base = {}
+data_base_lists = {}
+bot.data_base_subscriptions = {}
+
 try:
-    data_base_file_name = 'data_base.json'
-    with open(data_base_file_name, 'r') as file:
+    data_base_lists_file_name = 'data_base.json'
+    with open(data_base_lists_file_name, 'r') as file:
         data = file.read()
-    data_base = json.loads(data)
+    data_base_lists = json.loads(data)
+
+    data_base_subscriptions_file_name = 'data_base_subscriptions.json'
+    with open(data_base_subscriptions_file_name, 'r') as file:
+        data = file.read()
+    data_base_subscriptions_file_name = json.loads(data)
 except FileNotFoundError as e:
     pass
 
 
-def save():
+def save_lists():
     with open("data_base.json", "w") as write_file:
-        json.dump(data_base, write_file)
+        json.dump(data_base_lists, write_file)
+
+
+def save_subscriptions():
+    with open("data_base_subscriptions.json", "w") as write_file:
+        json.dump(data_base_subscriptions_file_name, write_file)
 
 
 @bot.message_handler(commands=['start'])
@@ -64,29 +76,31 @@ def send_list(message):
 @bot.message_handler(content_types=["text"])
 def content_text(message):
     print(f'От {message.from_user.first_name} в {message.chat.title} пришло {message.text}')
-    answer = content_text_answer(message.text.lower().strip(), str(message.chat.id))
-    print(answer)
+    answer, keyoard = content_text_answer(message.text.lower().strip(), str(message.chat.id))
     if answer != '':
-        bot.send_message(message.chat.id, answer, parse_mode="HTML")
+        if keyoard:
+            bot.send_message(message.chat.id, answer, parse_mode="HTML", reply_markup=keyoard)
+        else:
+            bot.send_message(message.chat.id, answer, parse_mode="HTML")
 
 
-def content_text_answer(text: str, chat_id: str) -> str:
+def content_text_answer(text: str, chat_id: str):
     answer = ''
 
     if text == '+' or text == '-' or text == 'бот добавь' or text == 'бот удали':
-        return ''
+        return '', None
 
     if text == 'бот покажи список' or text == '??':
-        if chat_id not in data_base:
-            return 'Ваш список пока пуст'
-        if data_base[chat_id]:
+        if chat_id not in data_base_lists:
+            return 'Ваш список пока пуст', None
+        if data_base_lists[chat_id]:
             answer += 'Ваш список\n'
-            for i in range(len(data_base[chat_id])):
-                item_text = f'{i + 1}) {data_base[chat_id][i]["title"]}'
-                if data_base[chat_id][i]["done"]:
+            for i in range(len(data_base_lists[chat_id])):
+                item_text = f'{i + 1}) {data_base_lists[chat_id][i]["title"]}'
+                if data_base_lists[chat_id][i]["done"]:
                     item_text = f'<strike>{item_text}</strike>'
                 answer += f'{item_text}\n'
-            return answer
+            return answer, None
     elif text.startswith('бот добавь') or text.startswith('++'):
         if text.startswith('бот добавь'):
             text = text.replace('бот добавь', '').strip()
@@ -94,15 +108,15 @@ def content_text_answer(text: str, chat_id: str) -> str:
             text = text.replace('++', '').strip()
 
         if text == '':
-            return ''
+            return '', None
 
-        if chat_id not in data_base:
-            data_base[chat_id] = []
+        if chat_id not in data_base_lists:
+            data_base_lists[chat_id] = []
         for word in text.split():
             answer += word + ' '
-        data_base[chat_id].append({"title": answer.strip(), "done": False})
+        data_base_lists[chat_id].append({"title": answer.strip(), "done": False})
         answer += 'добавлено'
-        save()
+        save_lists()
     elif text.startswith('бот удали') or text.startswith('--'):
         if text.startswith('бот удали'):
             text = text.replace('бот удали', '').strip()
@@ -110,21 +124,21 @@ def content_text_answer(text: str, chat_id: str) -> str:
             text = text.replace('--', '').strip()
 
         if text == '':
-            return ''
+            return '', None
 
         try:
             number = int(text.split()[0]) - 1
         except ValueError:
-            return f'{text.split()[0]} это не номер в списке'
-        if chat_id in data_base and len(data_base[chat_id]) > number:
-            answer += data_base[chat_id][number]["title"]
-            data_base[chat_id].pop(number)
-            if not data_base[chat_id]:
-                data_base.pop(chat_id)
+            return f'{text.split()[0]} это не номер в списке', None
+        if chat_id in data_base_lists and len(data_base_lists[chat_id]) > number:
+            answer += data_base_lists[chat_id][number]["title"]
+            data_base_lists[chat_id].pop(number)
+            if not data_base_lists[chat_id]:
+                data_base_lists.pop(chat_id)
             answer += ' удалено'
-            save()
+            save_lists()
         else:
-            return f'Элемента №{number + 1} нет'
+            return f'Элемента №{number + 1} нет', None
     elif text.startswith('бот зачеркни') or text.startswith('**'):
         if text.startswith('бот зачеркни'):
             text = text.replace('бот зачеркни', '').strip()
@@ -132,25 +146,26 @@ def content_text_answer(text: str, chat_id: str) -> str:
             text = text.replace('**', '').strip()
 
         if text == '':
-            return ''
+            return '', None
 
         try:
             number = int(text.split()[0]) - 1
         except ValueError:
             return f'{text.split()[0]} это не номер в списке'
-        if chat_id in data_base and len(data_base[chat_id]) > number:
-            answer += data_base[chat_id][number]["title"]
-            data_base[chat_id][number]["done"] = True
+        if chat_id in data_base_lists and len(data_base_lists[chat_id]) > number:
+            answer += data_base_lists[chat_id][number]["title"]
+            data_base_lists[chat_id][number]["done"] = True
             answer += ' зачеркнуто'
-            save()
+            save_lists()
         else:
-            return f'Элемента №{number + 1} нет'
+            return f'Элемента №{number + 1} нет', None
     else:
-        return ''
+        return '', None
 
-    return answer
+    return answer, None
 
 
 if __name__ == '__main__':
-    save()
+    save_lists()
+    save_subscriptions()
     bot.polling()
