@@ -76,10 +76,10 @@ def send_list(message):
 @bot.message_handler(content_types=["text"])
 def content_text(message):
     print(f'От {message.from_user.first_name} в {message.chat.title} пришло {message.text}')
-    answer, keyoard = content_text_answer(message.text.lower().strip(), str(message.chat.id))
+    answer, keyboard = content_text_answer(message.text.lower().strip(), str(message.chat.id))
     if answer != '':
-        if keyoard:
-            bot.send_message(message.chat.id, answer, parse_mode="HTML", reply_markup=keyoard)
+        if keyboard:
+            bot.send_message(message.chat.id, answer, parse_mode="HTML", reply_markup=keyboard)
         else:
             bot.send_message(message.chat.id, answer, parse_mode="HTML")
 
