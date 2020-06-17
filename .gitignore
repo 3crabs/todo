@@ -2,4 +2,4 @@ venv
 .idea
 telegram_token.json
 data_base.json
-data_base.json
+data_base_subscriptions.json
