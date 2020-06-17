@@ -1,5 +1,6 @@
 import json
 import telebot
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 config_file_name = 'telegram_token.json'
 try:
@@ -42,7 +43,8 @@ def save_subscriptions():
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.send_message(message.chat.id, "Привет я todo bot от 3CRABS soft!\n"
-                                      "Чтобы узнать подробности введи /help")
+                                      "Чтобы узнать подробности введи\n"
+                                      "/help")
 
 
 @bot.message_handler(commands=['help'])
@@ -54,7 +56,8 @@ def send_help(message):
                                       "бот добавь {название пункта}\n"
                                       "бот удали {номер пункта}\n"
                                       "бот зачеркни {номер пункта}\n"
-                                      "бот покажи список\n\n"
+                                      "бот покажи список\n"
+                                      "бот покажи меню\n\n"
 
                                       "Или напиши сокращенно:\n"
                                       "++ {название пункта} (добавление)\n"
@@ -65,12 +68,33 @@ def send_help(message):
                                       "Или команды:\n"
                                       "/start - привет бот\n"
                                       "/help - помощь\n"
-                                      "/list - показ списка\n")
+                                      "/list - показ списка\n"
+                                      "/menu - показ меню\n")
 
 
 @bot.message_handler(commands=["list"])
 def send_list(message):
     bot.send_message(message.chat.id, content_text_answer('бот покажи список', str(message.chat.id)), parse_mode='HTML')
+
+
+@bot.message_handler(commands=["menu"])
+def send_list(message):
+    answer, keyboard = content_text_answer('бот покажи меню', str(message.chat.id))
+    bot.send_message(message.chat.id, answer, reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    bot.answer_callback_query(call.id, show_alert=True, text="Режим жкх\n\n"
+                                                             "Режим жкх предназначен для ежемесячных напоминаний "
+                                                             "в течение заданых дней в нужное время\n\n"
+                                                             "Пример:\n"
+                                                             "Каждый месяц с 7 по 9 число в 19:00 "
+                                                             "напоминать об оплате ЖКХ\n")
+    bot.send_message(call.message.chat.id, 'Чтобы добавить напоминание в режиме ЖКХ введите:\n'
+                                           'Бот жкх {дни в формате д-д} {время в формате ч:м} {сообщение}\n\n'
+                                           'Пример:\n'
+                                           'Бот жкх 7-9 19:00 оплатить жкх')
 
 
 @bot.message_handler(content_types=["text"])
@@ -102,7 +126,9 @@ def content_text_answer(text: str, chat_id: str):
                 answer += f'{item_text}\n'
             return answer, None
     elif text == 'бот покажи меню':
-        return 'Меню', None
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton(text='режим жкх', callback_data='бот режим жкх'))
+        return 'Меню', markup
     elif text.startswith('бот добавь') or text.startswith('++'):
         if text.startswith('бот добавь'):
             text = text.replace('бот добавь', '').strip()
