@@ -13,4 +13,5 @@ class FunctionalTest(unittest.TestCase):
         bot.data_base_subscriptions = {}
 
     def test_open_menu(self):
-        pass
+        answer, keyboard = content_text_answer('бот покажи меню', '1')
+        self.assertEqual(answer, 'Меню')

@@ -101,6 +101,8 @@ def content_text_answer(text: str, chat_id: str):
                     item_text = f'<strike>{item_text}</strike>'
                 answer += f'{item_text}\n'
             return answer, None
+    elif text == 'бот покажи меню':
+        return 'Меню', None
     elif text.startswith('бот добавь') or text.startswith('++'):
         if text.startswith('бот добавь'):
             text = text.replace('бот добавь', '').strip()
