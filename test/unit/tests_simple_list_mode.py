@@ -30,7 +30,7 @@ class FunctionalTest(unittest.TestCase):
         self.assertIn('2) дело №2', answer)
         self.assertEqual(None, keyboard)
 
-    def test_see_emply_list(self):
+    def test_see_empty_list(self):
         todo_bot = TodoBot()
         answer, keyboard = todo_bot.content_text_answer('??', '1')
         self.assertIn('Список пуст', answer)
@@ -38,8 +38,31 @@ class FunctionalTest(unittest.TestCase):
 
     def test_strike_item(self):
         todo_bot = TodoBot()
-        todo_bot.chats = [Chat('1', [ListItem('дело №1')])]
-        answer, keyboard = todo_bot.content_text_answer('**', '1')
+        todo_bot.chats = [Chat('1', [ListItem('дело №1'), ListItem('дело №2')])]
+        answer, keyboard = todo_bot.content_text_answer('**1', '1')
         self.assertIn('дело №1', answer)
         self.assertEqual(None, keyboard)
-        self.assertIn('strike', todo_bot.get_chat_by_id('1').chat_list[0].state)
+        answer, keyboard = todo_bot.content_text_answer('**2', '1')
+        self.assertIn('дело №2', answer)
+        self.assertEqual(None, keyboard)
+
+    def test_strike_item_check_base(self):
+        todo_bot = TodoBot()
+        todo_bot.chats = [Chat('1', [ListItem('дело №1'), ListItem('дело №2')])]
+        todo_bot.content_text_answer('**1', '1')
+        self.assertEqual(['strike', 'none'], [item.state for item in todo_bot.get_chat_by_id('1').chat_list])
+        todo_bot.content_text_answer('**2', '1')
+        self.assertEqual(['strike', 'strike'], [item.state for item in todo_bot.get_chat_by_id('1').chat_list])
+
+    def test_delete_item(self):
+        todo_bot = TodoBot()
+        todo_bot.chats = [Chat('1', [ListItem('дело №1'), ListItem('дело №2')])]
+        answer, keyboard = todo_bot.content_text_answer('--1', '1')
+        self.assertIn('дело №1', answer)
+        self.assertEqual(None, keyboard)
+
+    def test_delete_item_check_base(self):
+        todo_bot = TodoBot()
+        todo_bot.chats = [Chat('1', [ListItem('дело №1'), ListItem('дело №2')])]
+        todo_bot.content_text_answer('--1', '1')
+        self.assertNotIn('дело №1', [item.label for item in todo_bot.get_chat_by_id('1').chat_list])
