@@ -1,3 +1,6 @@
+from src.ListItem import ListItem
+
+
 class TodoBot:
 
     def __init__(self):
@@ -15,15 +18,18 @@ class TodoBot:
 
         if text.startswith('++'):
             text = text.replace('++', '').strip()
-            self.get_list(chat_id).append({'label': text, 'state': 'none'})
+            self.get_list(chat_id).append(ListItem(text))
             return f'{text}', None
 
         if text == '??':
             text = ''
             for i in range(len(self.get_list(chat_id))):
-                item = self.get_list(chat_id)[i]['label']
-                text += f'{i + 1}) {item}'
+                item = self.get_list(chat_id)[i]
+                text += f'{i + 1}) {item.label}'
+                if item.state == 'strike':
+                    text = f'<strike>{text}</strike>'
             return f'{text}', None
 
         if text.startswith('**'):
-            return self.get_list(chat_id)[0]['label'], None
+            self.get_list(chat_id)[0].state = 'strike'
+            return self.get_list(chat_id)[0].label, None

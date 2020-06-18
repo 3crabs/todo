@@ -30,7 +30,7 @@ class FunctionalTest(unittest.TestCase):
         self.assertIn('1) дело №1', answer)
         # 'дело №2' появилось в списке под номером 2
         self.assertIn('2) дело №2', answer)
-        # клавиатеры нет
+        # клавиатуры нет
         self.assertEqual(None, keyboard)
 
         # зачеркиваем первое дело
@@ -40,3 +40,8 @@ class FunctionalTest(unittest.TestCase):
         # клавиатеры нет
         self.assertEqual(None, keyboard)
 
+        # просмотр списка
+        answer, keyboard = todo_bot.content_text_answer('??', '1')
+        self.assertIn('<strike>1) дело №1</strike>', answer)
+        self.assertIn('2) дело №2', answer)
+        self.assertEqual(None, keyboard)
