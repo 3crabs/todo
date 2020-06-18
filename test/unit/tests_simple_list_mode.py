@@ -70,12 +70,25 @@ class FunctionalTest(unittest.TestCase):
     def test_delete_all_strike_items(self):
         todo_bot = TodoBot()
         todo_bot.chats = [Chat('1', [ListItem('дело №1', 'strike')])]
-        answer, keyboard = todo_bot.content_text_answer('---', '1')
+        answer, keyboard = todo_bot.content_text_answer('--*', '1')
         self.assertEqual('Все зачеркнутые дела удалены', answer)
         self.assertEqual(None, keyboard)
 
     def test_delete_all_strike_items_check_base(self):
         todo_bot = TodoBot()
         todo_bot.chats = [Chat('1', [ListItem('дело №1', 'strike')])]
-        todo_bot.content_text_answer('---', '1')
+        todo_bot.content_text_answer('--*', '1')
         self.assertNotIn('strike', [item.state for item in todo_bot.get_chat_by_id('1').chat_list])
+
+    def test_delete_all_items(self):
+        todo_bot = TodoBot()
+        todo_bot.chats = [Chat('1', [ListItem('дело №1', 'strike')])]
+        answer, keyboard = todo_bot.content_text_answer('---', '1')
+        self.assertEqual('Все дела удалены', answer)
+        self.assertEqual(None, keyboard)
+
+    def test_delete_all_items_check_base(self):
+        todo_bot = TodoBot()
+        todo_bot.chats = [Chat('1', [ListItem('дело №1', 'strike'), ListItem('дело №2')])]
+        todo_bot.content_text_answer('---', '1')
+        self.assertEqual([], todo_bot.get_chat_by_id('1').chat_list)

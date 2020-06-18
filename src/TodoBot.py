@@ -42,7 +42,7 @@ class TodoBot:
             text = self.get_chat_by_id(chat_id).chat_list[i].label
             return f'Зачеркнуто: "{text}"', None
 
-        if text == '---':
+        if text == '--*':
             chat_list = self.get_chat_by_id(chat_id).chat_list
             len_chat_list = len(chat_list)
             for i in range(len_chat_list):
@@ -50,6 +50,11 @@ class TodoBot:
                 if chat_list[k].state == 'strike':
                     chat_list.pop(k)
             return 'Все зачеркнутые дела удалены', None
+
+        if text == '---':
+            chat_list = self.get_chat_by_id(chat_id).chat_list
+            chat_list.clear()
+            return 'Все дела удалены', None
 
         if text.startswith('--'):
             i = int(text.replace('--', '').strip()) - 1

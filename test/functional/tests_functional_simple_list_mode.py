@@ -69,6 +69,21 @@ class FunctionalTest(unittest.TestCase):
         self.assertEqual(None, keyboard)
 
         # удаление всех зачеркнутых элементов
-        answer, keyboard = todo_bot.content_text_answer('---', '1')
+        answer, keyboard = todo_bot.content_text_answer('--*', '1')
         self.assertIn('Все зачеркнутые дела удалены', answer)
+        self.assertEqual(None, keyboard)
+
+        # добавление 'дело №1' в список
+        answer, keyboard = todo_bot.content_text_answer('++ дело №1', '1')
+        self.assertIn('дело №1', answer)
+        self.assertEqual(None, keyboard)
+
+        # добавление 'дело №2' в список
+        answer, keyboard = todo_bot.content_text_answer('++ дело №2', '1')
+        self.assertIn('дело №2', answer)
+        self.assertEqual(None, keyboard)
+
+        # удаление всех элементов
+        answer, keyboard = todo_bot.content_text_answer('---', '1')
+        self.assertIn('Все дела удалены', answer)
         self.assertEqual(None, keyboard)
