@@ -1,5 +1,7 @@
 import unittest
 
+from src.TodoBot import TodoBot
+
 
 class FunctionalTest(unittest.TestCase):
 
