@@ -53,6 +53,10 @@ class FunctionalTest(unittest.TestCase):
         self.assertEqual('дело №1 зачеркнуто', answer)
         answer = content_text_answer('-- 1', '1')
         self.assertEqual('дело №1 удалено', answer)
+        answer = content_text_answer('++ дело №1', '1')
+        self.assertEqual('дело №1 добавлено', answer)
+        answer = content_text_answer('— 1', '1')
+        self.assertEqual('дело №1 удалено', answer)
 
     def test_short_delete_todo_item_out_of_range(self):
         bot.data_base = {'1': [{"title": 'дело №1', "done": False}]}

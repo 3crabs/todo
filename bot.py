@@ -46,7 +46,7 @@ def send_help(message):
 
                                       "Или напиши сокращенно:\n"
                                       "++ {название пункта} (добавление)\n"
-                                      "-- {номер пункта} (удаление)\n"
+                                      "-- или — {номер пункта} (удаление)\n"
                                       "** {номер пункта} (зачеркивание)\n"
                                       "?? (просмотр)\n\n"
 
@@ -103,11 +103,13 @@ def content_text_answer(text: str, chat_id: str) -> str:
         data_base[chat_id].append({"title": answer.strip(), "done": False})
         answer += 'добавлено'
         save()
-    elif text.startswith('бот удали') or text.startswith('--'):
+    elif text.startswith('бот удали') or text.startswith('--') or text.startswith('—'):
         if text.startswith('бот удали'):
             text = text.replace('бот удали', '').strip()
-        else:
+        elif text.startswith('--'):
             text = text.replace('--', '').strip()
+        else:
+            text = text.replace('—', '').strip()
 
         if text == '':
             return ''
