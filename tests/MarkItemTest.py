@@ -23,7 +23,7 @@ class MarkItemTest(unittest.TestCase):
         session.add(Item('дело №1', list))
         session.commit()
         answer = self.bot.message_handler('** 1', '1')
-        self.assertEqual('Отмечено "дело №1"', answer)
+        self.assertEqual('Зачеркнуто "дело №1"', answer)
 
     def test_mark_one_item_interface_2(self):
         session = self.bot.get_session()
@@ -33,7 +33,7 @@ class MarkItemTest(unittest.TestCase):
         session.add(Item('дело №2', list))
         session.commit()
         answer = self.bot.message_handler('** 1', '1')
-        self.assertEqual('Отмечено "дело №2"', answer)
+        self.assertEqual('Зачеркнуто "дело №2"', answer)
 
     def test_mark_one_item_interface_3(self):
         answer = self.bot.message_handler('** 1', '1')
@@ -58,6 +58,10 @@ class MarkItemTest(unittest.TestCase):
     def test_mark_one_item_interface_8(self):
         answer = self.bot.message_handler('** второй', '1')
         self.assertEqual('"второй" непохоже на номер в списке', answer)
+
+    def test_delete_all_items_interface(self):
+        answer = self.bot.message_handler('--*', '1')
+        self.assertEqual('Все зачеркнутые элементы удалены', answer)
 
     def test_mark_one_item_base(self):
         session = self.bot.get_session()

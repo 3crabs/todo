@@ -53,7 +53,7 @@ class TodoBot:
             for item in items:
                 item.state = ItemState.DELETE
             session.commit()
-        return 'Все элементы удалены'
+        return 'Все зачеркнутые элементы удалены'
 
     def add_item(self, chat_id, text):
         session = self.get_session()
@@ -78,7 +78,7 @@ class TodoBot:
             return f'Элемента с номером {number + 1} не может быть в вашем списке'
         items[number].state = ItemState.MARK
         session.commit()
-        return f'Отмечено "{items[number].name}"'
+        return f'Зачеркнуто "{items[number].name}"'
 
     def get_list(self, chat_id):
         session = self.get_session()
