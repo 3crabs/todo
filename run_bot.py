@@ -59,6 +59,8 @@ def one_time_schedule():
                                                       OneTimeScheduleItem.state == ItemState.ACTIVE).all()
     for item in items:
         bot.send_message(item.chat_id, item.name)
+        item.state = ItemState.DELETE
+    session.commit()
 
 
 if __name__ == '__main__':
