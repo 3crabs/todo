@@ -31,7 +31,7 @@ def send_help(message):
 
 @bot.message_handler(content_types=["text"])
 def content_text(message):
-    answer = message_handler(message.text.lower().strip(), str(message.chat.id))
+    answer = message_handler(message.text.strip(), str(message.chat.id))
     if answer != '':
         bot.send_message(message.chat.id, answer, parse_mode="HTML")
 
@@ -44,41 +44,65 @@ def message_handler(text: str, chat_id: str) -> str:
     elif text.startswith('--'):
         return delete_item(text.replace('--', '').strip())
     elif text == '??':
-        return get_list()
+        return get_list(chat_id)
 
 
 def add_item(chat_id, text):
-    list = List(chat_id)
     session = Database.get_instance().session()
+    list = session.query(List).filter_by(chat_id=chat_id).first()
+    if list is None:
+        list = List(chat_id)
     session.add(Item(text, list))
     session.commit()
     return f'Добавлено "{text}"'
 
 
 def mark_item(text):
-    number = int(text) - 1
+    try:
+        number = int(text) - 1
+    except ValueError:
+        return f'"{text}" непохоже на номер в списке'
     session = Database.get_instance().session()
     items = session.query(Item).all()
+    if number >= len(items):
+        return f'Элемента с номером {number + 1} нет в вашем списке'
+    if number < 0:
+        return f'Элемента с номером {number + 1} не может быть в вашем списке'
+    items[number].state = 'mark'
+    session.commit()
     return f'Отмечено "{items[number].name}"'
 
 
-def get_list():
+def get_list(chat_id):
     session = Database.get_instance().session()
-    items = session.query(Item).all()
+    list = session.query(List).filter_by(chat_id=chat_id).first()
+    items = session.query(Item).filter_by(list=list).all()
     if not items:
         return 'Список пуст'
     answer = ''
     for i in range(len(items)):
-        answer += f'{i + 1}) {items[i].name}'
+        if items[i].state == 'mark':
+            answer += f'<strike>{i + 1}) {items[i].name}</strike>'
+        else:
+            answer += f'{i + 1}) {items[i].name}'
         if i < len(items) - 1:
             answer += '\n'
     return answer
 
 
 def delete_item(text):
-    number = int(text) - 1
+    try:
+        number = int(text) - 1
+    except ValueError:
+        return f'"{text}" непохоже на номер в списке'
     session = Database.get_instance().session()
     items = session.query(Item).all()
+    if number >= len(items):
+        return f'Элемента с номером {number + 1} нет в вашем списке'
+    if number < 0:
+        return f'Элемента с номером {number + 1} не может быть в вашем списке'
+    items[number].state = 'mark'
+    session.commit()
     return f'Удалено "{items[number].name}"'
 
 

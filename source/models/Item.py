@@ -11,7 +11,9 @@ class Item(Base):
     name = Column(String)
     list_id = Column(Integer, ForeignKey("lists.id"))
     list = relationship("List")
+    state = Column(String)
 
-    def __init__(self, name: str, list: List):
+    def __init__(self, name: str, list: List, state: str = 'active'):
         self.name = name
         self.list = list
+        self.state = state

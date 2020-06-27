@@ -34,3 +34,60 @@ class GetListTest(unittest.TestCase):
         answer = message_handler('??', '1')
         self.assertEqual('1) дело №1\n'
                          '2) дело №2', answer)
+
+    def test_get_items_from_different_lists_interface(self):
+        list1 = List('1')
+        self.session.add(list1)
+        self.session.commit()
+        self.session.add(Item('дело №1', list1))
+        list2 = List('2')
+        self.session.add(list2)
+        self.session.commit()
+        self.session.add(Item('дело №2', list2))
+        self.session.commit()
+        answer = message_handler('??', '1')
+        self.assertEqual('1) дело №1', answer)
+        answer = message_handler('??', '2')
+        self.assertEqual('1) дело №2', answer)
+
+    def test_get_list_with_one_mark_item_interface(self):
+        list = List('1')
+        self.session.add(list)
+        self.session.commit()
+        self.session.add(Item('дело №1', list, state='mark'))
+        self.session.commit()
+        answer = message_handler('??', '1')
+        self.assertEqual('<strike>1) дело №1</strike>', answer)
+
+    def test_get_list_with_two_mark_item_interface(self):
+        list = List('1')
+        self.session.add(list)
+        self.session.commit()
+        self.session.add(Item('дело №1', list, state='mark'))
+        self.session.add(Item('дело №2', list, state='mark'))
+        self.session.commit()
+        answer = message_handler('??', '1')
+        self.assertEqual('<strike>1) дело №1</strike>\n'
+                         '<strike>2) дело №2</strike>', answer)
+
+    def test_get_list_with_one_mark_item_and_one_item_interface(self):
+        list = List('1')
+        self.session.add(list)
+        self.session.commit()
+        self.session.add(Item('дело №1', list, state='mark'))
+        self.session.add(Item('дело №2', list))
+        self.session.commit()
+        answer = message_handler('??', '1')
+        self.assertEqual('<strike>1) дело №1</strike>\n'
+                         '2) дело №2', answer)
+
+    def test_get_list_with_one_item_and_one_mark_item_interface(self):
+        list = List('1')
+        self.session.add(list)
+        self.session.commit()
+        self.session.add(Item('дело №1', list))
+        self.session.add(Item('дело №2', list, state='mark'))
+        self.session.commit()
+        answer = message_handler('??', '1')
+        self.assertEqual('1) дело №1\n'
+                         '<strike>2) дело №2</strike>', answer)

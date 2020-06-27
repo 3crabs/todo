@@ -2,6 +2,7 @@ import unittest
 
 from source.Database import Database
 from source.models.Item import Item
+from source.models.List import List
 from source.run_bot import message_handler
 
 
@@ -29,3 +30,9 @@ class AddItemTest(unittest.TestCase):
         item = self.session.query(Item).first()
         self.assertEqual('дело №2', item.name)
         self.assertEqual('2', item.list.chat_id)
+
+    def test_add_two_items_base(self):
+        message_handler('++ дело №1', '1')
+        message_handler('++ дело №2', '1')
+        lists = self.session.query(List).all()
+        self.assertEqual(1, len(lists))

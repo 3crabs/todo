@@ -28,3 +28,37 @@ class MarkItemTest(unittest.TestCase):
         self.session.commit()
         answer = message_handler('** 1', '1')
         self.assertEqual('Отмечено "дело №2"', answer)
+
+    def test_mark_one_item_interface_3(self):
+        answer = message_handler('** 1', '1')
+        self.assertEqual('Элемента с номером 1 нет в вашем списке', answer)
+
+    def test_mark_one_item_interface_4(self):
+        answer = message_handler('** -1', '1')
+        self.assertEqual('Элемента с номером -1 не может быть в вашем списке', answer)
+
+    def test_mark_one_item_interface_5(self):
+        answer = message_handler('** 2', '1')
+        self.assertEqual('Элемента с номером 2 нет в вашем списке', answer)
+
+    def test_mark_one_item_interface_6(self):
+        answer = message_handler('** -2', '1')
+        self.assertEqual('Элемента с номером -2 не может быть в вашем списке', answer)
+
+    def test_mark_one_item_interface_7(self):
+        answer = message_handler('** первый', '1')
+        self.assertEqual('"первый" непохоже на номер в списке', answer)
+
+    def test_mark_one_item_interface_8(self):
+        answer = message_handler('** второй', '1')
+        self.assertEqual('"второй" непохоже на номер в списке', answer)
+
+    def test_mark_one_item_base(self):
+        list = List('1')
+        self.session.add(list)
+        self.session.commit()
+        item = Item('дело №1', list)
+        self.session.add(item)
+        self.session.commit()
+        message_handler('** 1', '1')
+        self.assertEqual('mark', item.state)
