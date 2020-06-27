@@ -1,3 +1,5 @@
+import re
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -5,6 +7,7 @@ from source.models.Base import Base
 from source.models.Item import Item
 from source.models.ItemState import ItemState
 from source.models.List import List
+from source.models.OneTimeScheduleItem import OneTimeScheduleItem
 
 
 class TodoBot:
@@ -26,6 +29,8 @@ class TodoBot:
             return self.delete_all(chat_id)
         if text == '--*':
             return self.delete_all_mark(chat_id)
+        elif text.startswith('++') and re.search(r'\d\d.\d\d.\d\d\d\d \d\d:\d\d', text.replace('++', '').strip()):
+            return self.add_one_time_item(chat_id, text.replace('++', '').strip())
         elif text.startswith('++'):
             return self.add_item(chat_id, text.replace('++', '').strip())
         elif text.startswith('**'):
@@ -54,6 +59,15 @@ class TodoBot:
                 item.state = ItemState.DELETE
             session.commit()
         return 'Все зачеркнутые элементы удалены'
+
+    def add_one_time_item(self, chat_id, text):
+        words = text.split(' ')
+        name = ' '.join(words[2:])
+        notification_datetime = f'{words[0]} {words[1]}'
+        session = self.get_session()
+        session.add(OneTimeScheduleItem(chat_id, name, notification_datetime))
+        session.commit()
+        return f'Добавлено напоминание о "{name}" на {notification_datetime}'
 
     def add_item(self, chat_id, text):
         session = self.get_session()
