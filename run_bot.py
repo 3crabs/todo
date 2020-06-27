@@ -1,5 +1,4 @@
 import json
-import sys
 import threading
 import time
 
@@ -10,13 +9,13 @@ from src.TodoBot import TodoBot
 from src.models.ItemState import ItemState
 from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
-config_file_name = '../static/config.json'
+config_file_name = 'static/config.json'
 try:
     with open(config_file_name, 'r') as file:
         data = file.read()
         config = json.loads(data)
         bot = telebot.TeleBot(config["token"])
-        todo_bot = TodoBot("sqlite:///../static/todo_bot.db")
+        todo_bot = TodoBot("sqlite:///static/todo_bot.db")
 except FileNotFoundError as e:
     print(f"File {config_file_name} not found.")
     exit()
@@ -63,7 +62,6 @@ def one_time_schedule():
 
 
 if __name__ == '__main__':
-    sys.path.insert(0, '..')
     schedule.every(1).seconds.do(one_time_schedule)
     thread = threading.Thread(target=schedules)
     thread.start()
