@@ -48,9 +48,7 @@ def schedules():
 
 
 def get_datetime():
-    t = time.strftime("%d.%m.%Y %H:%M", time.gmtime())
-    print(t)
-    return t
+    return time.strftime("%d.%m.%Y %H:%M", time.gmtime(time.time() + 7 * 60 * 60))
 
 
 def one_time_schedule():
