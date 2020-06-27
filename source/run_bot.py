@@ -37,7 +37,11 @@ def content_text(message):
 
 
 def message_handler(text: str, chat_id: str) -> str:
-    if text.startswith('++'):
+    if text == '---':
+        return delete_all(chat_id)
+    if text == '--*':
+        return delete_all_mark(chat_id)
+    elif text.startswith('++'):
         return add_item(chat_id, text.replace('++', '').strip())
     elif text.startswith('**'):
         return mark_item(text.replace('**', '').strip())
@@ -45,6 +49,28 @@ def message_handler(text: str, chat_id: str) -> str:
         return delete_item(text.replace('--', '').strip())
     elif text == '??':
         return get_list(chat_id)
+
+
+def delete_all(chat_id):
+    session = Database.get_instance().session()
+    list = session.query(List).filter_by(chat_id=chat_id).first()
+    if list:
+        items = session.query(Item).filter_by(list_id=list.id).all()
+        for item in items:
+            item.state = 'delete'
+        session.commit()
+    return 'Все элементы удалены'
+
+
+def delete_all_mark(chat_id):
+    session = Database.get_instance().session()
+    list = session.query(List).filter_by(chat_id=chat_id).first()
+    if list:
+        items = session.query(Item).filter_by(list_id=list.id, state='mark').all()
+        for item in items:
+            item.state = 'delete'
+        session.commit()
+    return 'Все элементы удалены'
 
 
 def add_item(chat_id, text):
