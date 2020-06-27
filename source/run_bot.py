@@ -3,6 +3,7 @@ import telebot
 
 from source.Database import Database
 from source.models.Item import Item
+from source.models.ItemState import ItemState
 from source.models.List import List
 
 config_file_name = '../static/config.json'
@@ -37,7 +38,7 @@ def content_text(message):
 
 
 def message_handler(text: str, chat_id: str) -> str:
-    if text == '---':
+    if text == '---' or text == '—-':
         return delete_all(chat_id)
     if text == '--*':
         return delete_all_mark(chat_id)
@@ -45,8 +46,8 @@ def message_handler(text: str, chat_id: str) -> str:
         return add_item(chat_id, text.replace('++', '').strip())
     elif text.startswith('**'):
         return mark_item(text.replace('**', '').strip())
-    elif text.startswith('--'):
-        return delete_item(text.replace('--', '').strip())
+    elif text.startswith('--') or text.startswith('—'):
+        return delete_item(text.replace('—', '--').replace('--', '').strip())
     elif text == '??':
         return get_list(chat_id)
 
@@ -57,7 +58,7 @@ def delete_all(chat_id):
     if list:
         items = session.query(Item).filter_by(list_id=list.id).all()
         for item in items:
-            item.state = 'delete'
+            item.state = ItemState.DELETE
         session.commit()
     return 'Все элементы удалены'
 
@@ -66,9 +67,9 @@ def delete_all_mark(chat_id):
     session = Database.get_instance().session()
     list = session.query(List).filter_by(chat_id=chat_id).first()
     if list:
-        items = session.query(Item).filter_by(list_id=list.id, state='mark').all()
+        items = session.query(Item).filter_by(list_id=list.id, state=ItemState.MARK).all()
         for item in items:
-            item.state = 'delete'
+            item.state = ItemState.DELETE
         session.commit()
     return 'Все элементы удалены'
 
@@ -94,7 +95,7 @@ def mark_item(text):
         return f'Элемента с номером {number + 1} нет в вашем списке'
     if number < 0:
         return f'Элемента с номером {number + 1} не может быть в вашем списке'
-    items[number].state = 'mark'
+    items[number].state = ItemState.MARK
     session.commit()
     return f'Отмечено "{items[number].name}"'
 
@@ -102,12 +103,12 @@ def mark_item(text):
 def get_list(chat_id):
     session = Database.get_instance().session()
     list = session.query(List).filter_by(chat_id=chat_id).first()
-    items = session.query(Item).filter_by(list=list).all()
+    items = session.query(Item).filter(Item.list == list, Item.state != ItemState.DELETE).all()
     if not items:
         return 'Список пуст'
     answer = ''
     for i in range(len(items)):
-        if items[i].state == 'mark':
+        if items[i].state == ItemState.MARK:
             answer += f'<strike>{i + 1}) {items[i].name}</strike>'
         else:
             answer += f'{i + 1}) {items[i].name}'
@@ -127,10 +128,11 @@ def delete_item(text):
         return f'Элемента с номером {number + 1} нет в вашем списке'
     if number < 0:
         return f'Элемента с номером {number + 1} не может быть в вашем списке'
-    items[number].state = 'mark'
+    items[number].state = ItemState.MARK
     session.commit()
     return f'Удалено "{items[number].name}"'
 
 
 if __name__ == '__main__':
+    Database.new_base(test=False).session()
     bot.polling()

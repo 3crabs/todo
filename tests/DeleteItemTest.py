@@ -2,6 +2,7 @@ import unittest
 
 from source.Database import Database
 from source.models.Item import Item
+from source.models.ItemState import ItemState
 from source.models.List import List
 from source.run_bot import message_handler
 
@@ -65,7 +66,7 @@ class DeleteItemTest(unittest.TestCase):
         self.session.add(item)
         self.session.commit()
         message_handler('---', '1')
-        self.assertEqual('delete', item.state)
+        self.assertEqual(ItemState.DELETE, item.state)
 
     def test_delete_all_items_base_2(self):
         list = List('1')
@@ -75,24 +76,24 @@ class DeleteItemTest(unittest.TestCase):
         self.session.add(item)
         self.session.commit()
         message_handler('---', '2')
-        self.assertEqual('active', item.state)
+        self.assertEqual(ItemState.ACTIVE, item.state)
 
     def test_delete_all_mark_items_base(self):
         list = List('1')
         self.session.add(list)
         self.session.commit()
-        item = Item('дело №1', list, 'mark')
+        item = Item('дело №1', list, ItemState.MARK)
         self.session.add(item)
         self.session.commit()
         message_handler('--*', '1')
-        self.assertEqual('delete', item.state)
+        self.assertEqual(ItemState.DELETE, item.state)
 
     def test_delete_all_mark_items_base_2(self):
         list = List('1')
         self.session.add(list)
         self.session.commit()
-        item = Item('дело №1', list, 'active')
+        item = Item('дело №1', list, ItemState.ACTIVE)
         self.session.add(item)
         self.session.commit()
         message_handler('--*', '1')
-        self.assertEqual('active', item.state)
+        self.assertEqual(ItemState.ACTIVE, item.state)

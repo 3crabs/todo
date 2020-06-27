@@ -2,6 +2,7 @@ import unittest
 
 from source.Database import Database
 from source.models.Item import Item
+from source.models.ItemState import ItemState
 from source.models.List import List
 from source.run_bot import message_handler
 
@@ -61,4 +62,4 @@ class MarkItemTest(unittest.TestCase):
         self.session.add(item)
         self.session.commit()
         message_handler('** 1', '1')
-        self.assertEqual('mark', item.state)
+        self.assertEqual(ItemState.MARK, item.state)
