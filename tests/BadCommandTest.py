@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from source.TodoBot import TodoBot
+from src.TodoBot import TodoBot
 
 
 class BadCommandTest(unittest.TestCase):

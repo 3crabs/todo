@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from source.TodoBot import TodoBot
-from source.models.OneTimeScheduleItem import OneTimeScheduleItem
+from src.TodoBot import TodoBot
+from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
 
 class AddItemTest(unittest.TestCase):

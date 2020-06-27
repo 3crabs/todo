@@ -1,10 +1,10 @@
 import os
 import unittest
 
-from source.TodoBot import TodoBot
-from source.models.Item import Item
-from source.models.ItemState import ItemState
-from source.models.List import List
+from src.TodoBot import TodoBot
+from src.models.Item import Item
+from src.models.ItemState import ItemState
+from src.models.List import List
 
 
 class MarkItemTest(unittest.TestCase):

@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, Column, String
 
-from source.models.Base import Base
-from source.models.ItemState import ItemState
+from src.models.Base import Base
+from src.models.ItemState import ItemState
 
 
 class OneTimeScheduleItem(Base):

@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from source.TodoBot import TodoBot
-from source.models.Item import Item
-from source.models.List import List
+from src.TodoBot import TodoBot
+from src.models.Item import Item
+from src.models.List import List
 
 
 class AddItemTest(unittest.TestCase):

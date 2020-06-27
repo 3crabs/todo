@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, Column, String
 
-from source.models.Base import Base
+from src.models.Base import Base
 
 
 class List(Base):

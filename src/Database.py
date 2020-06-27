@@ -3,7 +3,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from source.models.Base import Base
+from src.models.Base import Base
 
 
 def create_database(test=False):

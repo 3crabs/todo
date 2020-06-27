@@ -1,9 +1,9 @@
 from sqlalchemy import Integer, Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from source.models.Base import Base
-from source.models.ItemState import ItemState
-from source.models.List import List
+from src.models.Base import Base
+from src.models.ItemState import ItemState
+from src.models.List import List
 
 
 class Item(Base):

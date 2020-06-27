@@ -5,9 +5,9 @@ import time
 import schedule
 import telebot
 
-from source.TodoBot import TodoBot
-from source.models.ItemState import ItemState
-from source.models.OneTimeScheduleItem import OneTimeScheduleItem
+from src.TodoBot import TodoBot
+from src.models.ItemState import ItemState
+from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
 config_file_name = '../static/config.json'
 try:

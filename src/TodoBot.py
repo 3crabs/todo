@@ -3,11 +3,11 @@ import re
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from source.models.Base import Base
-from source.models.Item import Item
-from source.models.ItemState import ItemState
-from source.models.List import List
-from source.models.OneTimeScheduleItem import OneTimeScheduleItem
+from src.models.Base import Base
+from src.models.Item import Item
+from src.models.ItemState import ItemState
+from src.models.List import List
+from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
 
 class TodoBot:
