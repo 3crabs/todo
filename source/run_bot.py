@@ -3,6 +3,7 @@ import telebot
 
 from source.Database import Database
 from source.models.Item import Item
+from source.models.List import List
 
 config_file_name = '../static/config.json'
 try:
@@ -37,7 +38,7 @@ def content_text(message):
 
 def message_handler(text: str, chat_id: str) -> str:
     if text.startswith('++'):
-        return add_item(text.replace('++', '').strip())
+        return add_item(chat_id, text.replace('++', '').strip())
     elif text.startswith('**'):
         return mark_item(text.replace('**', '').strip())
     elif text.startswith('--'):
@@ -46,7 +47,11 @@ def message_handler(text: str, chat_id: str) -> str:
         return get_list()
 
 
-def add_item(text):
+def add_item(chat_id, text):
+    list = List(chat_id)
+    session = Database.get_instance().session()
+    session.add(Item(text, list))
+    session.commit()
     return f'Добавлено "{text}"'
 
 
