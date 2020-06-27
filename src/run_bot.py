@@ -63,7 +63,7 @@ def one_time_schedule():
 
 
 if __name__ == '__main__':
-    sys.path.insert(0, '../src')
+    sys.path.insert(0, '..')
     schedule.every(1).seconds.do(one_time_schedule)
     thread = threading.Thread(target=schedules)
     thread.start()
