@@ -6,6 +6,7 @@ import schedule
 import telebot
 
 from src.TodoBot import TodoBot
+from src.models.EveryMonthTimeScheduleItem import EveryMonthTimeScheduleItem
 from src.models.ItemState import ItemState
 from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
@@ -51,18 +52,34 @@ def get_datetime():
     return time.strftime("%d.%m.%Y %H:%M", time.gmtime(time.time() + 7 * 60 * 60))
 
 
+def get_month_day():
+    return time.strftime("%d %H:%M", time.gmtime(time.time() + 7 * 60 * 60))
+
+
 def one_time_schedule():
     session = todo_bot.get_session()
-    items = session.query(OneTimeScheduleItem).filter(OneTimeScheduleItem.notification_datetime == get_datetime(),
-                                                      OneTimeScheduleItem.state == ItemState.ACTIVE).all()
+    items = session.query(OneTimeScheduleItem).filter(
+        OneTimeScheduleItem.notification_datetime == get_datetime(),
+        OneTimeScheduleItem.state == ItemState.ACTIVE).all()
     for item in items:
         bot.send_message(item.chat_id, item.name)
         item.state = ItemState.DELETE
     session.commit()
 
 
+def every_month_time_schedule():
+    session = todo_bot.get_session()
+    items = session.query(EveryMonthTimeScheduleItem).filter(
+        EveryMonthTimeScheduleItem.notification_datetime == get_month_day(),
+        EveryMonthTimeScheduleItem.state == ItemState.ACTIVE).all()
+    for item in items:
+        bot.send_message(item.chat_id, item.name)
+    session.commit()
+
+
 if __name__ == '__main__':
-    schedule.every(1).seconds.do(one_time_schedule)
+    schedule.every(1).minutes.do(one_time_schedule)
+    schedule.every(1).minutes.do(every_month_time_schedule)
     thread = threading.Thread(target=schedules)
     thread.start()
     bot.polling()

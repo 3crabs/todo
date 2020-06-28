@@ -29,7 +29,9 @@ class TodoBot:
             return self.delete_all(chat_id)
         if text == '--*':
             return self.delete_all_mark(chat_id)
-        elif text.startswith('++') and re.search(r'\d\d.\d\d.\d\d\d\d \d\d:\d\d', text.replace('++', '').strip()):
+        elif text.startswith('++') and re.search(r'\d \d\d:\d\d', text.replace('++', '').strip()):
+            return self.add_every_month_time_item(chat_id, text.replace('++', '').strip())
+        elif text.startswith('++') and re.search(r'\d\d.\d\d.\d \d\d:\d\d', text.replace('++', '').strip()):
             return self.add_one_time_item(chat_id, text.replace('++', '').strip())
         elif text.startswith('++'):
             return self.add_item(chat_id, text.replace('++', '').strip())

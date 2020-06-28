@@ -5,7 +5,7 @@ from src.TodoBot import TodoBot
 from src.models.OneTimeScheduleItem import OneTimeScheduleItem
 
 
-class AddItemTest(unittest.TestCase):
+class AddOneTimeItemTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.bot = TodoBot("sqlite:///../static/test_todo_bot.db")
