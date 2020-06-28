@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.models.Base import Base
+from src.models.EveryMonthTimeScheduleItem import EveryMonthTimeScheduleItem
 from src.models.Item import Item
 from src.models.ItemState import ItemState
 from src.models.List import List
@@ -68,6 +69,15 @@ class TodoBot:
         notification_datetime = f'{words[0]} {words[1]}'
         session = self.get_session()
         session.add(OneTimeScheduleItem(chat_id, name, notification_datetime))
+        session.commit()
+        return f'Добавлено напоминание о "{name}" на {notification_datetime}'
+
+    def add_every_month_time_item(self, chat_id, text):
+        words = text.split(' ')
+        name = ' '.join(words[2:])
+        notification_datetime = f'{words[0]} {words[1]}'
+        session = self.get_session()
+        session.add(EveryMonthTimeScheduleItem(chat_id, name, notification_datetime))
         session.commit()
         return f'Добавлено напоминание о "{name}" на {notification_datetime}'
 
